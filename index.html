@@ -15,7 +15,9 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Prevent scrolling if content exceeds viewport */
+            padding: 10px; /* Add some padding for smaller screens */
+            box-sizing: border-box; /* Include padding in element's total width and height */
         }
 
         /* Import the pixel font */
@@ -25,6 +27,8 @@
             color: #e6e6e6;
             text-shadow: 2px 2px #000;
             margin-bottom: 20px;
+            font-size: 1.8em; /* Adjusted for smaller screens */
+            text-align: center;
         }
 
         #gameCanvas {
@@ -34,35 +38,44 @@
             image-rendering: -moz-crisp-edges;
             image-rendering: -webkit-optimize-contrast;
             image-rendering: pixelated;
-            width: 480px; /* 240 (canvas width) * 2 */
-            height: 240px; /* 120 (canvas height) * 2 */
+            width: 90%; /* Make canvas responsive, max 480px */
+            max-width: 480px;
+            height: auto; /* Maintain aspect ratio */
+            aspect-ratio: 2 / 1; /* Original aspect ratio (240/120 = 2) */
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
         }
 
         #game-info {
             margin-top: 15px;
-            font-size: 1.2em;
+            font-size: 1em; /* Adjusted for smaller screens */
             color: #e6e6e6;
             text-align: center;
-            width: 480px;
+            width: 90%;
+            max-width: 480px;
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 5px; /* Reduced padding */
             box-sizing: border-box;
         }
 
         #game-info p {
             margin: 5px 0;
+            flex-grow: 1; /* Allow paragraphs to grow */
+            text-align: center;
+            min-width: fit-content; /* Prevent text from becoming too narrow */
         }
 
         #healthBarContainer {
-            width: 100px; /* Adjust as needed */
-            height: 15px;
+            width: 80px; /* Adjust as needed */
+            height: 12px; /* Slightly smaller */
             background-color: #333;
             border: 1px solid #777;
             border-radius: 3px;
             overflow: hidden;
-            margin-left: 10px;
+            margin-left: 5px; /* Adjusted margin */
+            display: inline-block; /* Keep it in line with HP text */
+            vertical-align: middle; /* Align with text */
         }
 
         #healthBar {
@@ -73,8 +86,8 @@
         }
 
         #restartButton {
-            padding: 15px 30px;
-            font-size: 1.5em;
+            padding: 10px 20px; /* Smaller padding for mobile */
+            font-size: 1.2em; /* Smaller font for mobile */
             background-color: #c00;
             color: white;
             border: 3px solid #800;
@@ -84,6 +97,7 @@
             box-shadow: 3px 3px #800;
             transition: background-color 0.2s, box-shadow 0.2s;
             font-family: 'Press Start 2P', cursive;
+            white-space: nowrap; /* Prevent button text from wrapping */
         }
 
         #restartButton:hover {
@@ -99,25 +113,26 @@
 
         #gameOverOverlay, #gameWonOverlay {
             display: none;
-            position: absolute;
+            position: fixed; /* Use fixed for overlays to cover full screen reliably */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.85); /* Slightly darker overlay */
             color: white;
-            font-size: 3em;
+            font-size: 2em; /* Adjusted for mobile */
             text-align: center;
-            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 10;
             font-family: 'Press Start 2P', cursive;
+            padding: 20px; /* Add padding to prevent text touching edges */
+            box-sizing: border-box;
         }
 
         #gameOverOverlay p, #gameWonOverlay p {
-            margin: 0;
+            margin: 10px 0; /* Add more margin for readability */
             text-shadow: 3px 3px #800;
         }
 
@@ -127,6 +142,99 @@
 
         #gameOverOverlay button, #gameWonOverlay button {
             margin-top: 30px;
+            padding: 12px 25px; /* Slightly larger buttons in overlay */
+            font-size: 1.3em;
+        }
+
+        /* D-pad styles */
+        #dpad-container {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 80px); /* 3 columns, 80px wide each */
+            grid-template-rows: repeat(3, 80px); /* 3 rows, 80px tall each */
+            gap: 5px;
+            width: 240px; /* 3 * 80px */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dpad-button {
+            background-color: #555;
+            color: #eee;
+            border: 2px solid #777;
+            border-radius: 8px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 2px 2px #333;
+            transition: background-color 0.1s, box-shadow 0.1s, transform 0.1s;
+            -webkit-user-select: none; /* Prevent text selection on tap */
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .dpad-button:hover {
+            background-color: #777;
+        }
+
+        .dpad-button:active {
+            background-color: #444;
+            box-shadow: 1px 1px #222;
+            transform: translateY(1px);
+        }
+
+        #up-button {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        #left-button {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        #right-button {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        #down-button {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        /* Hide keyboard instructions if adding them */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
+            #game-info {
+                font-size: 0.9em;
+                margin-top: 10px;
+            }
+            #restartButton {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+            #gameOverOverlay p, #gameWonOverlay p {
+                font-size: 1.5em;
+            }
+            #gameOverOverlay button, #gameWonOverlay button {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+            #dpad-container {
+                grid-template-columns: repeat(3, 70px);
+                grid-template-rows: repeat(3, 70px);
+                width: 210px;
+            }
+            .dpad-button {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -140,6 +248,13 @@
         <p>Level: <span id="levelValue">1</span></p>
     </div>
     <button id="restartButton">Restart Game</button>
+
+    <div id="dpad-container">
+        <button class="dpad-button" id="up-button">▲</button>
+        <button class="dpad-button" id="left-button">◀</button>
+        <button class="dpad-button" id="right-button">▶</button>
+        <button class="dpad-button" id="down-button">▼</button>
+    </div>
 
     <div id="gameOverOverlay">
         <p>GAME OVER</p>
@@ -163,6 +278,13 @@
         const levelValueDisplay = document.getElementById('levelValue');
         const gameOverOverlay = document.getElementById('gameOverOverlay');
         const gameWonOverlay = document.getElementById('gameWonOverlay');
+
+        // D-pad buttons
+        const upButton = document.getElementById('up-button');
+        const downButton = document.getElementById('down-button');
+        const leftButton = document.getElementById('left-button');
+        const rightButton = document.getElementById('right-button');
+
 
         // --- Game Settings ---
         const TILE_SIZE = 4;
@@ -549,27 +671,23 @@
             healthBar.style.width = (player.health / player.maxHealth) * 100 + '%';
         }
 
-        function handleKeyPress(e) {
+        function movePlayer(direction) {
             if (!gameRunning) return;
 
             let newPlayerX = player.x;
             let newPlayerY = player.y;
 
-            switch (e.key) {
-                case 'ArrowUp':
-                case 'w':
+            switch (direction) {
+                case 'up':
                     newPlayerY--;
                     break;
-                case 'ArrowDown':
-                case 's':
+                case 'down':
                     newPlayerY++;
                     break;
-                case 'ArrowLeft':
-                case 'a':
+                case 'left':
                     newPlayerX--;
                     break;
-                case 'ArrowRight':
-                case 'd':
+                case 'right':
                     newPlayerX++;
                     break;
             }
@@ -579,6 +697,29 @@
             ) {
                 player.x = newPlayerX;
                 player.y = newPlayerY;
+            }
+        }
+
+
+        // Original keyboard input handler (still useful for desktops/laptops)
+        function handleKeyPress(e) {
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                    movePlayer('up');
+                    break;
+                case 'ArrowDown':
+                case 's':
+                    movePlayer('down');
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                    movePlayer('left');
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                    movePlayer('right');
+                    break;
             }
         }
 
@@ -628,6 +769,13 @@
         // --- Event Listeners ---
         document.addEventListener('keydown', handleKeyPress);
         restartButton.addEventListener('click', restartGame);
+
+        // D-pad event listeners for mobile
+        upButton.addEventListener('click', () => movePlayer('up'));
+        downButton.addEventListener('click', () => movePlayer('down'));
+        leftButton.addEventListener('click', () => movePlayer('left'));
+        rightButton.addEventListener('click', () => movePlayer('right'));
+
 
         // --- Start the game for the first time ---
         initGame(true);
